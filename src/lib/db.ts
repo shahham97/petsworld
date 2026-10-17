@@ -5,13 +5,36 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-function createPrismaClient(): PrismaClient {
-  if (!process.env.DATABASE_URL) {
+function getNormalizedDatabaseUrl(): string {
+  let url = process.env.DATABASE_URL || "";
+  if (!url) {
     console.error("FATAL: DATABASE_URL environment variable is missing.");
     throw new Error("DATABASE_URL is not set");
   }
 
+  // Ensure SSL parameters required by TiDB Cloud Serverless are present
+  // TiDB Cloud prohibits unencrypted transport: ERROR HY000 (1105): Connections using insecure transport are prohibited
+  if (!url.includes("sslaccept=") && !url.includes("sslmode=")) {
+    const delimiter = url.includes("?") ? "&" : "?";
+    url = `${url}${delimiter}sslaccept=strict`;
+  }
+
+  // Ensure reasonable connection timeouts and pool limits for serverless execution
+  if (!url.includes("connect_timeout=")) {
+    const delimiter = url.includes("?") ? "&" : "?";
+    url = `${url}${delimiter}connect_timeout=30`;
+  }
+
+  // Update process.env so any Prisma internal engines inherit the secure URL
+  process.env.DATABASE_URL = url;
+  return url;
+}
+
+function createPrismaClient(): PrismaClient {
+  const secureUrl = getNormalizedDatabaseUrl();
+
   const client = new PrismaClient({
+    datasourceUrl: secureUrl,
     log:
       process.env.NODE_ENV === "development"
         ? [
