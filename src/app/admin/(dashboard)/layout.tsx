@@ -58,7 +58,7 @@ export default async function AdminDashboardLayout({
       <aside className="w-64 h-full bg-[#1F4D3A] text-[#FFF8F0] shrink-0 hidden md:flex flex-col border-r border-[#173B2C]">
         {/* Brand Logo Header */}
         <div className="p-6 border-b border-[#2D664F] flex items-center justify-between">
-          <PetsWorldLogo variant="light" asLink={false} />
+          <PetsWorldLogo variant="light" asLink={true} />
         </div>
 
         {/* Navigation Links (Scrollable with scrollbar visually hidden) */}

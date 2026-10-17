@@ -95,7 +95,7 @@ export function AdminMobileNav({ session }: AdminMobileNavProps) {
           <div className="relative w-72 max-w-[85vw] bg-[#1F4D3A] text-[#FFF8F0] flex flex-col h-full shadow-2xl z-10 animate-in slide-in-from-left duration-200">
             {/* Drawer Header */}
             <div className="p-5 border-b border-[#2D664F] flex items-center justify-between">
-              <PetsWorldLogo variant="light" asLink={false} />
+              <PetsWorldLogo variant="light" asLink={true} />
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}

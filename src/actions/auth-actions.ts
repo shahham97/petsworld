@@ -79,11 +79,16 @@ export async function loginAdminAction(
       email: adminUser.email,
       name: adminUser.name,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.message === "NEXT_REDIRECT" || error?.digest?.startsWith("NEXT_REDIRECT")) {
+      throw error;
+    }
     console.error("[LOGIN_ACTION_ERROR]:", error);
     return {
       success: false,
-      error: "Unable to sign in. Please try again shortly.",
+      error: error?.message?.includes("insecure transport")
+        ? "Database connection requires SSL. Please wait a moment while connection resets."
+        : error?.message || "Unable to sign in. Please try again shortly.",
     };
   }
 

@@ -105,26 +105,39 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* MOBILE & TABLET (< lg, especially iPhones): Arranged so users clearly see BOTH the text and the uncropped photo */}
-        <section className="lg:hidden relative w-full bg-[#FAF5EE] overflow-hidden py-8 px-4 sm:px-6">
+        {/* MOBILE & TABLET (< lg, especially iPhones): Image placed ABOVE headings, text and buttons */}
+        <section className="lg:hidden relative w-full bg-[#FAF5EE] overflow-hidden py-6 px-4 sm:px-6">
           <div className="max-w-xl mx-auto flex flex-col space-y-4">
-            {/* Tagline Pill */}
+            {/* 1. Full uncropped photo of puppies, kitten, podium, and supplies at the TOP */}
+            <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md border border-[#E8D9CD]/70">
+              <Image
+                src="/images/hero-pets.webp"
+                alt="Golden retriever puppies and tabby kitten on podium with pet food supplies"
+                fill
+                priority
+                unoptimized
+                sizes="(max-width: 1024px) 100vw, 800px"
+                className="object-cover object-center"
+              />
+            </div>
+
+            {/* 2. Tagline Pill */}
             <div className="inline-flex self-start items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8D9CD] text-xs font-bold text-[#1F4D3A] shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-[#D98E3F]" aria-hidden="true" />
               <span>Pakistan&apos;s Dedicated Online Pet Store</span>
             </div>
 
-            {/* Headline */}
+            {/* 3. Headline */}
             <h1 className="text-2xl sm:text-3xl font-black text-[#1F4D3A] tracking-tight leading-snug font-display">
               {settings?.heroHeadline || "Everything They Love. All in One Place."}
             </h1>
 
-            {/* Subheadline */}
+            {/* 4. Subheadline */}
             <p className="text-sm sm:text-base text-[#4A433D] font-medium leading-relaxed">
               {settings?.heroSubheadline || "Premium Pet Food • Accessories • Care"}
             </p>
 
-            {/* CTAs */}
+            {/* 5. CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <Link
                 href={settings?.heroPrimaryCtaLink || "/shop"}
@@ -140,19 +153,6 @@ export default async function HomePage() {
               >
                 <span>{settings?.heroSecondaryCtaLabel || "Browse Categories"}</span>
               </Link>
-            </div>
-
-            {/* Full uncropped photo of puppies, kitten, podium, and supplies */}
-            <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md mt-4 border border-[#E8D9CD]/70">
-              <Image
-                src="/images/hero-pets.webp"
-                alt="Golden retriever puppies and tabby kitten on podium with pet food supplies"
-                fill
-                priority
-                unoptimized
-                sizes="(max-width: 1024px) 100vw, 800px"
-                className="object-cover object-center"
-              />
             </div>
           </div>
         </section>

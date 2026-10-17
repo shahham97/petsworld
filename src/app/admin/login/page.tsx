@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-[#FFF8F0] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <PetsWorldLogo className="justify-center mb-6" asLink={false} />
+        <PetsWorldLogo className="justify-center mb-6" asLink={true} />
         <h2 className="text-2xl font-black text-[#2B2622] tracking-tight">
           Admin Portal Sign In
         </h2>

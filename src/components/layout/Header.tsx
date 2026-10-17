@@ -79,10 +79,10 @@ export function Header({
           </nav>
 
           {/* Actions & Utilities */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             <Link
               href="/shop"
-              className="p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A]"
+              className="hidden sm:inline-flex p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A]"
               aria-label="Search pet products"
             >
               <Search className="w-5 h-5" aria-hidden="true" />
@@ -90,7 +90,7 @@ export function Header({
 
             <Link
               href="/admin"
-              className="p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A]"
+              className="hidden sm:inline-flex p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A]"
               aria-label="Admin portal"
             >
               <User className="w-5 h-5" aria-hidden="true" />
@@ -113,9 +113,10 @@ export function Header({
             <button
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="md:hidden p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A] cursor-pointer"
+              className="md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A] cursor-pointer touch-manipulation"
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-wrapper"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6 text-[#1F4D3A]" aria-hidden="true" />
@@ -127,57 +128,67 @@ export function Header({
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation Wrapper */}
+      {/* Mobile Navigation Drawer Dropdown with Backdrop Overlay */}
       {mobileMenuOpen && (
-        <div
-          id="mobile-navigation-wrapper"
-          className="md:hidden border-t border-[#E8D9CD] bg-[#FFF8F0] shadow-xl px-4 pt-4 pb-6 space-y-3 animate-in slide-in-from-top-2 duration-200"
-        >
-          {/* Mobile Quick Search Bar */}
-          <form method="GET" action="/shop" className="relative mb-2">
-            <input
-              type="text"
-              name="q"
-              placeholder="Search pet food, toys, treats..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-full border border-[#E8D9CD] bg-white text-base sm:text-xs text-[#2B2622] placeholder:text-[#6B6560]/70 focus:outline-none focus:ring-2 focus:ring-[#1F4D3A]"
-            />
-            <Search className="w-4 h-4 text-[#6B6560] absolute left-3 top-3.5 pointer-events-none" />
-          </form>
+        <>
+          {/* Dimmed backdrop */}
+          <div
+            className="md:hidden fixed inset-0 top-16 sm:top-20 bg-black/40 backdrop-blur-xs z-40"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
 
-          {/* Mobile Navigation Links */}
-          <div className="space-y-1">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between px-4 py-3 rounded-2xl text-base font-bold transition-colors ${
-                    isActive
-                      ? "bg-[#1F4D3A] text-white shadow-xs"
-                      : "text-[#2B2622] hover:bg-[#F4DFCB]/60 active:bg-[#F4DFCB]"
-                  }`}
-                >
-                  <span>{link.label}</span>
-                  <span className="text-xs opacity-60">→</span>
-                </Link>
-              );
-            })}
-          </div>
+          {/* Slide-down Drawer Panel */}
+          <div
+            id="mobile-navigation-wrapper"
+            className="md:hidden fixed inset-x-0 top-16 sm:top-20 z-50 bg-[#FFF8F0] border-b border-[#E8D9CD] shadow-2xl px-5 pt-4 pb-8 space-y-4 max-h-[calc(100vh-5rem)] overflow-y-auto"
+          >
+            {/* Mobile Quick Search Bar */}
+            <form method="GET" action="/shop" className="relative mb-2">
+              <input
+                type="text"
+                name="q"
+                placeholder="Search pet food, toys, treats..."
+                className="w-full pl-9 pr-4 py-3 rounded-2xl border border-[#E8D9CD] bg-white text-base text-[#2B2622] placeholder:text-[#6B6560]/70 focus:outline-none focus:ring-2 focus:ring-[#1F4D3A]"
+              />
+              <Search className="w-5 h-5 text-[#6B6560] absolute left-3.5 top-3.5 pointer-events-none" />
+            </form>
 
-          {/* Quick Support / Contact Callout in Drawer */}
-          <div className="pt-3 border-t border-[#E8D9CD]/70 flex items-center justify-between text-xs text-[#6B6560]">
-            <span>Helpline: <strong className="text-[#1F4D3A]">0300-1234567</strong></span>
-            <Link
-              href="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-[#D98E3F] font-bold hover:underline"
-            >
-              Admin Portal
-            </Link>
+            {/* Mobile Navigation Links */}
+            <div className="space-y-1.5">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between px-4 py-3 rounded-2xl text-base font-bold transition-colors ${
+                      isActive
+                        ? "bg-[#1F4D3A] text-white shadow-xs"
+                        : "text-[#2B2622] hover:bg-[#F4DFCB]/60 active:bg-[#F4DFCB]"
+                    }`}
+                  >
+                    <span>{link.label}</span>
+                    <span className="text-xs opacity-60">→</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Quick Support / Contact Callout in Drawer */}
+            <div className="pt-4 border-t border-[#E8D9CD]/70 flex items-center justify-between text-xs text-[#6B6560]">
+              <span>Helpline: <strong className="text-[#1F4D3A]">0300-1234567</strong></span>
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-[#D98E3F] font-bold hover:underline"
+              >
+                Admin Portal
+              </Link>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </header>
   );
