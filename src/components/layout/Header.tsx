@@ -39,15 +39,13 @@ export function Header({
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-        isScrolled
-          ? "bg-[#FFF8F0]/90 backdrop-blur-md shadow-xs border-b border-[#E8D9CD]/70"
-          : "bg-transparent border-b border-transparent"
+      className={`sticky top-0 z-50 w-full transition-all duration-200 bg-[#FFF8F0]/95 backdrop-blur-md border-b border-[#E8D9CD] ${
+        isScrolled ? "shadow-sm" : "shadow-2xs"
       }`}
     >
       {/* Announcement Bar */}
       {announcementEnabled && announcementText && (
-        <div className="bg-[#1F4D3A]/90 backdrop-blur-sm text-[#FFF8F0] text-xs font-semibold py-1.5 px-4 text-center tracking-wide">
+        <div className="bg-[#1F4D3A] text-[#FFF8F0] text-xs font-semibold py-1.5 px-4 text-center tracking-wide">
           <span>{announcementText}</span>
         </div>
       )}
@@ -113,41 +111,72 @@ export function Header({
 
             {/* Mobile Hamburger Toggle */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A]"
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="md:hidden p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A] cursor-pointer"
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
-                <X className="w-6 h-6" aria-hidden="true" />
+                <X className="w-6 h-6 text-[#1F4D3A]" aria-hidden="true" />
               ) : (
-                <Menu className="w-6 h-6" aria-hidden="true" />
+                <Menu className="w-6 h-6 text-[#2B2622]" aria-hidden="true" />
               )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Navigation Wrapper */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#E8D9CD] bg-[#FFF8F0] px-4 pt-4 pb-6 space-y-2 animate-in slide-in-from-top-2">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`block px-4 py-2.5 rounded-xl text-base font-semibold transition-colors ${
-                  isActive
-                    ? "bg-[#1F4D3A] text-white"
-                    : "text-[#2B2622] hover:bg-[#F4DFCB]/60"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
+        <div
+          id="mobile-navigation-wrapper"
+          className="md:hidden border-t border-[#E8D9CD] bg-[#FFF8F0] shadow-xl px-4 pt-4 pb-6 space-y-3 animate-in slide-in-from-top-2 duration-200"
+        >
+          {/* Mobile Quick Search Bar */}
+          <form method="GET" action="/shop" className="relative mb-2">
+            <input
+              type="text"
+              name="q"
+              placeholder="Search pet food, toys, treats..."
+              className="w-full pl-9 pr-4 py-2.5 rounded-full border border-[#E8D9CD] bg-white text-base sm:text-xs text-[#2B2622] placeholder:text-[#6B6560]/70 focus:outline-none focus:ring-2 focus:ring-[#1F4D3A]"
+            />
+            <Search className="w-4 h-4 text-[#6B6560] absolute left-3 top-3.5 pointer-events-none" />
+          </form>
+
+          {/* Mobile Navigation Links */}
+          <div className="space-y-1">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center justify-between px-4 py-3 rounded-2xl text-base font-bold transition-colors ${
+                    isActive
+                      ? "bg-[#1F4D3A] text-white shadow-xs"
+                      : "text-[#2B2622] hover:bg-[#F4DFCB]/60 active:bg-[#F4DFCB]"
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  <span className="text-xs opacity-60">→</span>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Quick Support / Contact Callout in Drawer */}
+          <div className="pt-3 border-t border-[#E8D9CD]/70 flex items-center justify-between text-xs text-[#6B6560]">
+            <span>Helpline: <strong className="text-[#1F4D3A]">0300-1234567</strong></span>
+            <Link
+              href="/admin"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-[#D98E3F] font-bold hover:underline"
+            >
+              Admin Portal
+            </Link>
+          </div>
         </div>
       )}
     </header>

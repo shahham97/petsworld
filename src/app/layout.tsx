@@ -46,8 +46,8 @@ export default async function RootLayout({
   const settings = await getCachedStoreSettings();
 
   return (
-    <html lang="en" className={`${fontSans.variable} ${fontDisplay.variable}`}>
-      <body className="flex flex-col min-h-screen bg-[#FFF8F0] text-[#2B2622]">
+    <html lang="en" suppressHydrationWarning className={`${fontSans.variable} ${fontDisplay.variable}`}>
+      <body suppressHydrationWarning className="flex flex-col min-h-screen bg-[#FFF8F0] text-[#2B2622]">
         <Suspense fallback={null}>
           <PageNavigationLoader />
         </Suspense>

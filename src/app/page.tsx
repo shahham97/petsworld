@@ -53,7 +53,7 @@ export default async function HomePage() {
       <main className="flex-1">
         {/* 1. HERO SECTION */}
         {/* DESKTOP (lg and above): Full-Bleed Edge-to-Edge with 100% Opacity Background & Refined Typography */}
-        <section className="hidden lg:flex relative w-full overflow-hidden bg-[#FAF5EE] min-h-[620px] items-center -mt-20 pt-28">
+        <section className="hidden lg:flex relative w-full overflow-hidden bg-[#FAF5EE] min-h-[580px] items-center py-14 lg:py-20">
           {/* Full Edge-to-Edge Background Image (100% Opacity) */}
           <div className="absolute inset-0" style={{ position: "absolute" }}>
             <Image
@@ -70,7 +70,7 @@ export default async function HomePage() {
           </div>
 
           {/* Centered Content Container */}
-          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-24 w-full">
+          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-14 lg:py-16 w-full">
             <div className="max-w-xl space-y-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-[#E8D9CD] text-xs font-bold text-[#1F4D3A] shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-[#D98E3F]" aria-hidden="true" />
@@ -106,7 +106,7 @@ export default async function HomePage() {
         </section>
 
         {/* MOBILE & TABLET (< lg, especially iPhones): Arranged so users clearly see BOTH the text and the uncropped photo */}
-        <section className="lg:hidden relative w-full bg-[#FAF5EE] overflow-hidden -mt-16 pt-20 pb-8 px-4 sm:px-6">
+        <section className="lg:hidden relative w-full bg-[#FAF5EE] overflow-hidden py-8 px-4 sm:px-6">
           <div className="max-w-xl mx-auto flex flex-col space-y-4">
             {/* Tagline Pill */}
             <div className="inline-flex self-start items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8D9CD] text-xs font-bold text-[#1F4D3A] shadow-xs">
