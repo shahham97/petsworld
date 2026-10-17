@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { BlogCard } from "@/components/ui/BlogCard";
-import { BookOpen, Sparkles, Filter } from "lucide-react";
+import { BookOpen, Filter } from "lucide-react";
 
 export const revalidate = 120;
 

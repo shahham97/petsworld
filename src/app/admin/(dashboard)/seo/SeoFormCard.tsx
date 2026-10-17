@@ -4,7 +4,7 @@ import React, { useState, useTransition } from "react";
 import { savePageSeoAction } from "@/actions/seo-actions";
 import { useToast } from "@/components/ui/Toast";
 import { MediaPicker } from "@/components/admin/MediaPicker";
-import { Save, Loader2, Sparkles, Globe } from "lucide-react";
+import { Save, Loader2, Globe } from "lucide-react";
 import Image from "next/image";
 
 interface PageSeoItem {

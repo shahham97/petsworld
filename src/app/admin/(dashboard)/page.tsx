@@ -11,7 +11,6 @@ import {
   Package,
   Layers,
   ArrowRight,
-  Sparkles,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -255,7 +254,7 @@ export default async function AdminDashboardPage() {
       {/* Quick Launchpad */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="p-6 rounded-3xl bg-gradient-to-br from-[#FFF8F0] to-[#F4DFCB]/40 border border-[#E8D9CD]">
-          <Sparkles className="w-6 h-6 text-[#D98E3F] mb-3" aria-hidden="true" />
+          <Package className="w-6 h-6 text-[#D98E3F] mb-3" aria-hidden="true" />
           <h3 className="font-bold text-[#2B2622] text-base">Dynamic Products</h3>
           <p className="text-xs text-[#6B6560] mt-1 leading-relaxed">
             Every product is template-driven from the database with live instant revalidation.

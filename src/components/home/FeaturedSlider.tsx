@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Award } from "lucide-react";
 import { ProductCard, ProductCardData } from "@/components/ui/ProductCard";
 
 export interface FeaturedSliderProps {
@@ -39,7 +39,7 @@ export function FeaturedSlider({
           <div>
             {badge && (
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBC9AA]/50 text-xs font-bold text-[#1F4D3A] mb-2">
-                <Sparkles className="w-3.5 h-3.5 text-[#D98E3F]" aria-hidden="true" />
+                <Award className="w-3.5 h-3.5 text-[#D98E3F]" aria-hidden="true" />
                 <span>{badge}</span>
               </div>
             )}

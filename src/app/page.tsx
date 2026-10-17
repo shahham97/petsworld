@@ -8,7 +8,6 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
-  Sparkles,
   ShieldCheck,
   Truck,
   CreditCard,
@@ -73,7 +72,7 @@ export default async function HomePage() {
           <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-14 lg:py-16 w-full">
             <div className="max-w-xl space-y-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-[#E8D9CD] text-xs font-bold text-[#1F4D3A] shadow-xs">
-                <Sparkles className="w-3.5 h-3.5 text-[#D98E3F]" aria-hidden="true" />
+                <ShieldCheck className="w-3.5 h-3.5 text-[#D98E3F]" aria-hidden="true" />
                 <span>Pakistan&apos;s Dedicated Online Pet Store</span>
               </div>
 
@@ -105,10 +104,16 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* MOBILE & TABLET (< lg, especially iPhones): Image placed ABOVE headings, text and buttons */}
+        {/* MOBILE & TABLET (< lg, especially iPhones): Tag pill placed ABOVE hero image, followed by text & buttons */}
         <section className="lg:hidden relative w-full bg-[#FAF5EE] overflow-hidden py-6 px-4 sm:px-6">
           <div className="max-w-xl mx-auto flex flex-col space-y-4">
-            {/* 1. Full uncropped photo of puppies, kitten, podium, and supplies at the TOP */}
+            {/* 1. Tagline Pill (Above image as requested) */}
+            <div className="inline-flex self-start items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8D9CD] text-xs font-bold text-[#1F4D3A] shadow-xs">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#D98E3F]" aria-hidden="true" />
+              <span>Pakistan&apos;s Dedicated Online Pet Store</span>
+            </div>
+
+            {/* 2. Full uncropped photo of puppies, kitten, podium, and supplies */}
             <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md border border-[#E8D9CD]/70">
               <Image
                 src="/images/hero-pets.webp"
@@ -119,12 +124,6 @@ export default async function HomePage() {
                 sizes="(max-width: 1024px) 100vw, 800px"
                 className="object-cover object-center"
               />
-            </div>
-
-            {/* 2. Tagline Pill */}
-            <div className="inline-flex self-start items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8D9CD] text-xs font-bold text-[#1F4D3A] shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-[#D98E3F]" aria-hidden="true" />
-              <span>Pakistan&apos;s Dedicated Online Pet Store</span>
             </div>
 
             {/* 3. Headline */}

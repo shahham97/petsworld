@@ -16,7 +16,7 @@ import {
   Trash2,
   ArrowUp,
   ArrowDown,
-  Sparkles,
+  Zap,
   Search,
   AlertTriangle,
   HelpCircle,
@@ -813,7 +813,7 @@ export function ProductEditor({ initialData, categories }: Props) {
                 onClick={autoFillSeo}
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#FFF8F0] border border-[#E8D9CD] text-[11px] font-bold text-[#1F4D3A] hover:bg-[#F4DFCB]/60"
               >
-                <Sparkles className="w-3 h-3 text-[#D98E3F]" />
+                <Zap className="w-3 h-3 text-[#D98E3F]" />
                 <span>Auto-Fill SEO</span>
               </button>
             </div>

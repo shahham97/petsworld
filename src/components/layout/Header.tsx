@@ -29,6 +29,23 @@ export function Header({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Auto-close mobile menu on route changes
+  React.useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when mobile menu is open
+  React.useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileMenuOpen]);
+
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Shop", href: "/shop" },
@@ -131,17 +148,17 @@ export function Header({
       {/* Mobile Navigation Drawer Dropdown with Backdrop Overlay */}
       {mobileMenuOpen && (
         <>
-          {/* Dimmed backdrop */}
+          {/* Dimmed backdrop covering everything behind the header drawer */}
           <div
-            className="md:hidden fixed inset-0 top-16 sm:top-20 bg-black/40 backdrop-blur-xs z-40"
+            className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-xs -z-10"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Slide-down Drawer Panel */}
+          {/* Slide-down Drawer Panel sitting cleanly right below the header bar */}
           <div
             id="mobile-navigation-wrapper"
-            className="md:hidden fixed inset-x-0 top-16 sm:top-20 z-50 bg-[#FFF8F0] border-b border-[#E8D9CD] shadow-2xl px-5 pt-4 pb-8 space-y-4 max-h-[calc(100vh-5rem)] overflow-y-auto"
+            className="md:hidden relative z-50 border-t border-[#E8D9CD] bg-[#FFF8F0] shadow-2xl px-5 pt-4 pb-8 space-y-4 max-h-[calc(100dvh-5.5rem)] overflow-y-auto"
           >
             {/* Mobile Quick Search Bar */}
             <form method="GET" action="/shop" className="relative mb-2">

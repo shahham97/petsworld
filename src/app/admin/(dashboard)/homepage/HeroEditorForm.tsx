@@ -5,7 +5,7 @@ import { saveHeroSettingsAction } from "@/actions/hero-actions";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import { useToast } from "@/components/ui/Toast";
 import Image from "next/image";
-import { Save, Loader2, Sparkles, X, Plus, Trash2 } from "lucide-react";
+import { Save, Loader2, Type, X, Plus, Trash2 } from "lucide-react";
 
 export function HeroEditorForm({ settings }: { settings: any }) {
   const [isPending, startTransition] = useTransition();
@@ -69,7 +69,7 @@ export function HeroEditorForm({ settings }: { settings: any }) {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E8D9CD] shadow-sm space-y-4">
             <h2 className="text-base font-bold text-[#2B2622] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#D98E3F]" />
+              <Type className="w-4 h-4 text-[#D98E3F]" />
               <span>Hero Text & Call-to-Actions</span>
             </h2>
 

@@ -11,7 +11,7 @@ import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { FeaturedSlider } from "@/components/home/FeaturedSlider";
 import { ProductCardData } from "@/components/ui/ProductCard";
 import { extractTocAndInjectIds } from "@/lib/blog-toc";
-import { Clock, Calendar, User, Sparkles, BookOpen } from "lucide-react";
+import { Clock, Calendar, User, HelpCircle, BookOpen } from "lucide-react";
 
 export const revalidate = 120;
 
@@ -292,7 +292,7 @@ export default async function BlogPostTemplate({ params }: BlogPostPageProps) {
               {faqs.length > 0 && (
                 <section className="space-y-4 pt-6">
                   <h2 className="text-xl font-black text-[#2B2622] font-display flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-[#D98E3F]" />
+                    <HelpCircle className="w-5 h-5 text-[#D98E3F]" />
                     <span>Frequently Asked Questions</span>
                   </h2>
                   <FaqAccordion faqs={faqs} />
