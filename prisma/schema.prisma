@@ -1,0 +1,541 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+enum PaymentMethodCode {
+  COD
+  EASYPAISA
+  JAZZCASH
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING_VERIFICATION
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum OrderStatus {
+  AWAITING_PAYMENT_VERIFICATION
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURN_REQUESTED
+  RETURNED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum FaqScopeType {
+  GLOBAL
+  PAGE
+  CATEGORY
+  PRODUCT
+  BLOG_POST
+}
+
+enum MediaVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum MediaStatus {
+  TEMP
+  ATTACHED
+  ORPHANED
+}
+
+enum EmailStatus {
+  SENT
+  FAILED
+  SKIPPED_NOT_CONFIGURED
+}
+
+model AdminUser {
+  id               String         @id @default(cuid())
+  email            String         @unique
+  passwordHash     String
+  name             String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  verifiedPayments OrderPayment[] @relation("AdminVerifiedPayments")
+}
+
+model Category {
+  id             String            @id @default(cuid())
+  name           String
+  slug           String            @unique
+  parentId       String?
+  description    String?           @db.Text
+  imageAssetId   String?
+  sortOrder      Int               @default(0)
+  isActive       Boolean           @default(true)
+  seoTitle       String?
+  seoDescription String?           @db.Text
+  parent         Category?         @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children       Category[]        @relation("CategoryHierarchy")
+  products       ProductCategory[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([parentId])
+  @@index([slug])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+  isPrimary  Boolean  @default(false)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@index([productId])
+  @@index([categoryId])
+}
+
+model Product {
+  id                 String               @id @default(cuid())
+  name               String
+  slug               String               @unique
+  sku                String               @unique
+  brand              String?
+  shortDescription   String?              @db.Text
+  description        String               @db.LongText
+  price              Decimal              @db.Decimal(10, 2)
+  salePrice          Decimal?             @db.Decimal(10, 2)
+  stockQty           Int                  @default(0)
+  lowStockThreshold  Int                  @default(5)
+  isPublished        Boolean              @default(false)
+  isFeatured         Boolean              @default(false)
+  featuredSort       Int                  @default(0)
+  weight             String?
+  dimensions         String?
+  ingredients        String?              @db.Text
+  usageInstructions  String?              @db.Text
+  hasAllergyNotice   Boolean              @default(false)
+  allergyNoticeText  String?              @db.Text
+  seoTitle           String?
+  seoDescription     String?              @db.Text
+  canonicalUrl       String?
+  ogAssetId          String?
+  deletedAt          DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  categories         ProductCategory[]
+  images             ProductImage[]
+  specs              ProductSpec[]
+  reviews            Review[]
+  stockMovements     StockMovement[]
+  relatedBlogPosts   BlogRelatedProduct[]
+
+  @@index([slug])
+  @@index([sku])
+  @@index([isPublished])
+  @@index([isFeatured])
+  @@index([featuredSort])
+  @@index([deletedAt])
+  @@index([createdAt])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  assetId   String
+  altText   String?
+  sortOrder Int      @default(0)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([assetId])
+  @@index([sortOrder])
+}
+
+model ProductSpec {
+  id        String  @id @default(cuid())
+  productId String
+  key       String
+  value     String
+  sortOrder Int     @default(0)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([sortOrder])
+}
+
+model Review {
+  id        String       @id @default(cuid())
+  productId String
+  name      String
+  rating    Int
+  comment   String       @db.Text
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Customer {
+  id        String    @id @default(cuid())
+  email     String?
+  phone     String
+  firstName String
+  lastName  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  addresses Address[]
+  orders    Order[]
+
+  @@index([email])
+  @@index([phone])
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  customerId   String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  province     String
+  postalCode   String?
+  isDefault    Boolean  @default(false)
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+}
+
+model PaymentMethod {
+  id           String            @id @default(cuid())
+  code         PaymentMethodCode @unique
+  label        String
+  isEnabled    Boolean           @default(true)
+  sortOrder    Int               @default(0)
+  instructions String?           @db.Text
+  accountTitle String?
+  accountNumber String?
+  bankName     String?
+  iban         String?
+  branch       String?
+  maxCodAmount Decimal?          @db.Decimal(10, 2)
+  requireReceipt Boolean         @default(false)
+  fields       Json
+  updatedAt    DateTime          @updatedAt
+
+  @@index([isEnabled])
+  @@index([sortOrder])
+}
+
+model CheckoutSession {
+  id                String             @id @default(cuid())
+  tokenHash         String             @unique
+  cartSnapshot      Json
+  customerInfo      Json?
+  paymentMethodCode PaymentMethodCode?
+  paymentDetails    Json?
+  receiptAssetId    String?
+  completedSteps    Int                @default(1)
+  idempotencyKey    String?
+  expiresAt         DateTime
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([tokenHash])
+  @@index([expiresAt])
+}
+
+model Order {
+  id               String               @id @default(cuid())
+  orderNumber      String               @unique
+  customerId       String?
+  customerSnapshot Json
+  addressSnapshot  Json
+  subtotal         Decimal              @db.Decimal(10, 2)
+  shippingFee      Decimal              @db.Decimal(10, 2)
+  total            Decimal              @db.Decimal(10, 2)
+  paymentMethod    PaymentMethodCode
+  paymentStatus    PaymentStatus        @default(UNPAID)
+  status           OrderStatus          @default(AWAITING_PAYMENT_VERIFICATION)
+  notes            String?              @db.Text
+  courier          String?
+  trackingNumber   String?
+  idempotencyKey   String               @unique
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  customer         Customer?            @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  items            OrderItem[]
+  payment          OrderPayment?
+  history          OrderStatusHistory[]
+  stockMovements   StockMovement[]
+  emailLogs        EmailLog[]
+
+  @@index([orderNumber])
+  @@index([customerId])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+}
+
+model OrderPayment {
+  id                       String            @id @default(cuid())
+  orderId                  String            @unique
+  method                   PaymentMethodCode
+  details                  Json
+  normalizedTransactionId  String?
+  normalizedRrn            String?
+  receiptAssetId           String?
+  amountDeclared           Decimal           @db.Decimal(10, 2)
+  submittedAt              DateTime          @default(now())
+  verifiedByAdminId        String?
+  verifiedAt               DateTime?
+  rejectionReason          String?           @db.Text
+  order                    Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  verifiedBy               AdminUser?        @relation("AdminVerifiedPayments", fields: [verifiedByAdminId], references: [id], onDelete: SetNull)
+
+  @@unique([method, normalizedTransactionId])
+  @@index([orderId])
+  @@index([verifiedByAdminId])
+  @@index([normalizedRrn])
+}
+
+model OrderItem {
+  id           String   @id @default(cuid())
+  orderId      String
+  productId    String?
+  nameSnapshot String
+  skuSnapshot  String
+  unitPrice    Decimal  @db.Decimal(10, 2)
+  quantity     Int
+  subtotal     Decimal  @db.Decimal(10, 2)
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model OrderStatusHistory {
+  id         String      @id @default(cuid())
+  orderId    String
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
+  note       String?     @db.Text
+  changedBy  String
+  at         DateTime    @default(now())
+  order      Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([at])
+}
+
+model StockMovement {
+  id        String   @id @default(cuid())
+  productId String
+  delta     Int
+  reason    String
+  orderId   String?
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([productId])
+  @@index([orderId])
+  @@index([createdAt])
+}
+
+model EmailLog {
+  id                String      @id @default(cuid())
+  orderId           String?
+  template          String
+  recipient         String
+  status            EmailStatus
+  providerMessageId String?
+  sanitizedError    String?     @db.Text
+  createdAt         DateTime    @default(now())
+  order             Order?      @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model BlogPost {
+  id             String               @id @default(cuid())
+  title          String
+  slug           String               @unique
+  excerpt        String               @db.Text
+  coverAssetId   String?
+  coverAlt       String?
+  content        String               @db.LongText
+  authorName     String               @default("PetsWorld Team")
+  status         BlogStatus           @default(DRAFT)
+  publishedAt    DateTime?
+  readingTimeMin Int                  @default(3)
+  tags           String?
+  seoTitle       String?
+  seoDescription String?              @db.Text
+  canonicalUrl   String?
+  ogAssetId      String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  relatedProducts BlogRelatedProduct[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([createdAt])
+}
+
+model BlogRelatedProduct {
+  postId    String
+  productId String
+  sortOrder Int      @default(0)
+  post      BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([postId, productId])
+  @@index([postId])
+  @@index([productId])
+}
+
+model Faq {
+  id        String       @id @default(cuid())
+  question  String
+  answer    String       @db.Text
+  sortOrder Int          @default(0)
+  isActive  Boolean      @default(true)
+  scopeType FaqScopeType
+  scopeKey  String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([scopeType, scopeKey])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+model MediaAsset {
+  id                String          @id @default(cuid())
+  mimeType          String
+  width             Int
+  height            Int
+  altText           String?
+  caption           String?
+  byteSize          Int
+  sha256            String
+  blurDataUrl       String?         @db.Text
+  visibility        MediaVisibility @default(PUBLIC)
+  status            MediaStatus     @default(ATTACHED)
+  ownerType         String?
+  ownerId           String?
+  checkoutSessionId String?
+  createdAt         DateTime        @default(now())
+  variants          MediaVariant[]
+
+  @@index([sha256])
+  @@index([visibility])
+  @@index([status])
+  @@index([ownerType, ownerId])
+  @@index([checkoutSessionId])
+  @@index([createdAt])
+}
+
+model MediaVariant {
+  id          String     @id @default(cuid())
+  assetId     String
+  variantName String
+  width       Int
+  height      Int
+  byteSize    Int
+  data        Bytes      @db.LongBlob
+  asset       MediaAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([assetId, variantName])
+  @@index([assetId])
+}
+
+model PageSeo {
+  id                String   @id @default(cuid())
+  pageKey           String   @unique
+  seoTitle          String
+  seoDescription    String   @db.Text
+  ogAssetId         String?
+  editableIntroText String?  @db.Text
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([pageKey])
+}
+
+model StoreSettings {
+  id                         String   @id @default("default")
+  storeName                  String   @default("PetsWorld")
+  phone                      String   @default("03001234567")
+  whatsAppContact            String   @default("923001234567")
+  email                      String   @default("info@petsworld.pk")
+  address                    String   @default("Lahore, Pakistan")
+  socialLinks                Json?
+  announcementBarText        String?  @default("🐾 Free delivery across Pakistan on orders over Rs. 3,000!")
+  announcementBarEnabled     Boolean  @default(true)
+  heroHeadline               String   @default("Everything They Love. All in One Place.")
+  heroSubheadline            String?  @default("Premium Pet Food • Accessories • Care")
+  heroPrimaryCtaLabel        String   @default("Shop Now")
+  heroPrimaryCtaLink         String   @default("/shop")
+  heroSecondaryCtaLabel      String   @default("Browse Categories")
+  heroSecondaryCtaLink       String   @default("/categories")
+  heroAssetId                String?
+  heroMobileAssetId          String?
+  whyPetsWorldPoints         Json?
+  shippingFlatFee            Decimal  @default(200.00) @db.Decimal(10, 2)
+  freeShippingThreshold      Decimal  @default(3000.00) @db.Decimal(10, 2)
+  shippingProvinceOverrides  Json?
+  serviceableProvinces       Json?
+  serviceableCities          Json?
+  requireCustomerEmail       Boolean  @default(true)
+  whatsAppEnabled            Boolean  @default(true)
+  whatsAppNumber             String   @default("923001234567")
+  whatsAppPrefilledMessage   String   @default("Hi PetsWorld, I have a question about your pet supplies.")
+  whatsAppButtonLabel        String   @default("WhatsApp")
+  whatsAppButtonSide         String   @default("right")
+  emailEnabled               Boolean  @default(true)
+  emailFromName              String   @default("PetsWorld")
+  emailReplyTo               String   @default("orders@petsworld.pk")
+  emailNotificationToggles   Json?
+  updatedAt                  DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String   @db.Text
+  status    String   @default("UNREAD")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([status])
+}
