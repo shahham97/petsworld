@@ -19,7 +19,7 @@ export function Header({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
-  const { itemCount } = useCart();
+  const { itemCount, openDrawer } = useCart();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -113,10 +113,11 @@ export function Header({
               <User className="w-5 h-5" aria-hidden="true" />
             </Link>
 
-            {/* Cart Link */}
-            <Link
-              href="/cart"
-              className="relative p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A]"
+            {/* Cart Button */}
+            <button
+              type="button"
+              onClick={openDrawer}
+              className="relative p-2.5 rounded-full text-[#2B2622] hover:bg-[#F4DFCB]/60 transition-colors focus:ring-2 focus:ring-[#1F4D3A] cursor-pointer"
               aria-label="Shopping Cart"
             >
               <ShoppingBag className="w-5 h-5" aria-hidden="true" />
@@ -124,7 +125,7 @@ export function Header({
               <span className="absolute top-1 right-1 w-4 h-4 bg-[#D98E3F] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                 {itemCount}
               </span>
-            </Link>
+            </button>
 
             {/* Mobile Hamburger Toggle */}
             <button

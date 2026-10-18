@@ -114,7 +114,7 @@ export default async function AdminDashboardLayout({
       {/* Main Content Area (Header pinned, content scrollable) */}
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         {/* Pinned / Sticky Top Navbar */}
-        <header className="sticky top-0 z-30 h-16 shrink-0 bg-white/95 backdrop-blur-md border-b border-[#E8D9CD] px-4 sm:px-6 flex items-center justify-between shadow-2xs">
+        <header className="sticky top-0 z-30 h-16 shrink-0 bg-white border-b border-[#E8D9CD] px-4 sm:px-6 flex items-center justify-between shadow-2xs">
           <div className="flex items-center gap-3">
             <AdminMobileNav session={session} />
             <span className="text-xs font-bold uppercase tracking-wider text-[#D98E3F] bg-[#FFF8F0] px-2.5 py-1 rounded-lg border border-[#E8D9CD]">

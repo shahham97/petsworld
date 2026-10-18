@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { WhatsAppWidget } from "./WhatsAppWidget";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 
 export interface StorefrontShellProps {
   children: React.ReactNode;
@@ -36,6 +37,7 @@ export function StorefrontShell({ children, settings }: StorefrontShellProps) {
       <div className="flex-1">{children}</div>
       <Footer />
       <WhatsAppWidget settings={settings} />
+      <CartDrawer />
     </div>
   );
 }

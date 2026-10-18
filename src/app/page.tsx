@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { getCachedHomepageData } from "@/lib/cached-data";
+import { getCategoryImageUrl } from "@/lib/category-helpers";
 
 export const revalidate = 60;
 
@@ -171,28 +172,21 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
               {topCategories.map((cat) => (
                 <Link
                   key={cat.id}
                   href={`/category/${cat.slug}`}
                   className="group p-4 sm:p-6 rounded-3xl bg-white border border-[#E8D9CD] hover:border-[#1F4D3A] hover:shadow-xl transition-all duration-300 text-center flex flex-col items-center justify-between"
                 >
-                  <div
-                    className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-2xl bg-[#FFF8F0] border border-[#E8D9CD] overflow-hidden mb-3 sm:mb-4 group-hover:scale-105 transition-transform flex items-center justify-center font-black text-xl sm:text-2xl text-[#1F4D3A]"
-                    style={{ position: "relative" }}
-                  >
-                    {cat.imageAssetId ? (
-                      <Image
-                        src={`/media/${cat.imageAssetId}/thumb`}
-                        alt={cat.name}
-                        fill
-                        sizes="100px"
-                        className="object-cover"
-                      />
-                    ) : (
-                      cat.name.slice(0, 1)
-                    )}
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-2xl sm:rounded-3xl bg-[#FAF5EE] border border-[#E8D9CD]/80 overflow-hidden mb-3 sm:mb-4 group-hover:scale-105 transition-transform shadow-xs">
+                    <Image
+                      src={getCategoryImageUrl(cat.slug, cat.imageAssetId)}
+                      alt={cat.name}
+                      fill
+                      sizes="(max-width: 640px) 120px, 150px"
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
                   </div>
 
                   <div>

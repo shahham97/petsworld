@@ -48,24 +48,32 @@ export default async function CategoryPage({
     include: {
       parent: { select: { id: true, name: true, slug: true } },
       children: { where: { isActive: true }, select: { id: true, name: true, slug: true } },
-      products: {
-        where: {
-          product: { isPublished: true, deletedAt: null },
-        },
-        include: {
-          product: {
-            include: {
-              images: { orderBy: { sortOrder: "asc" }, take: 1 },
-            },
-          },
-        },
-      },
     },
   });
 
   if (!category || !category.isActive) {
     notFound();
   }
+
+  // Include current category ID and all active subcategory IDs
+  const allCategoryIds = [category.id, ...category.children.map((c) => c.id)];
+
+  // Fetch all products belonging to this category OR any of its subcategories
+  const products = await db.product.findMany({
+    where: {
+      isPublished: true,
+      deletedAt: null,
+      categories: {
+        some: {
+          categoryId: { in: allCategoryIds },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+    include: {
+      images: { orderBy: { sortOrder: "asc" }, take: 1 },
+    },
+  });
 
   // Scoped FAQs (Category-scoped falling back to Global)
   let faqs = await db.faq.findMany({
@@ -96,7 +104,7 @@ export default async function CategoryPage({
   }
   breadcrumbItems.push({ label: category.name });
 
-  const productCards: ProductCardData[] = category.products.map(({ product: p }) => ({
+  const productCards: ProductCardData[] = products.map((p) => ({
     id: p.id,
     name: p.name,
     slug: p.slug,

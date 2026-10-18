@@ -11,6 +11,9 @@ export interface CartItemInput {
 interface CartContextValue {
   items: CartItemInput[];
   itemCount: number;
+  isDrawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
   addItem: (productId: string, quantity?: number) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
@@ -23,6 +26,7 @@ const CART_STORAGE_KEY = "petsworld_cart_items";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItemInput[]>([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const toast = useToast();
 
@@ -37,6 +41,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
     setMounted(true);
   }, []);
+
+  const openDrawer = useCallback(() => setIsDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setIsDrawerOpen(false), []);
 
   const persist = useCallback((updated: CartItemInput[]) => {
     setItems(updated);
@@ -59,6 +66,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         updated = [...items, { productId, quantity }];
       }
       persist(updated);
+      setIsDrawerOpen(true);
       toast.success("Added to shopping cart.");
     },
     [items, persist, toast]
@@ -97,6 +105,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       value={{
         items: mounted ? items : [],
         itemCount,
+        isDrawerOpen,
+        openDrawer,
+        closeDrawer,
         addItem,
         updateQuantity,
         removeItem,
@@ -114,6 +125,9 @@ export function useCart() {
     return {
       items: [],
       itemCount: 0,
+      isDrawerOpen: false,
+      openDrawer: () => {},
+      closeDrawer: () => {},
       addItem: () => {},
       updateQuantity: () => {},
       removeItem: () => {},

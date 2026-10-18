@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PetsWorldLogo } from "@/components/brand/PetsWorldLogo";
@@ -34,7 +35,12 @@ interface AdminMobileNavProps {
 
 export function AdminMobileNav({ session }: AdminMobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close drawer when pathname changes
   useEffect(() => {
@@ -81,20 +87,20 @@ export function AdminMobileNav({ session }: AdminMobileNavProps) {
         <Menu className="w-5 h-5 text-[#1F4D3A]" aria-hidden="true" />
       </button>
 
-      {/* Slide-out Drawer Overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex">
-          {/* Backdrop */}
+      {/* Slide-out Drawer Overlay via React Portal */}
+      {isOpen && mounted && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[100] flex">
+          {/* Full Screen Dimmed Backdrop */}
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setIsOpen(false)}
             aria-hidden="true"
           />
 
-          {/* Drawer Sidebar */}
-          <div className="relative w-72 max-w-[85vw] bg-[#1F4D3A] text-[#FFF8F0] flex flex-col h-full shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+          {/* Full Height Drawer Sidebar */}
+          <div className="relative w-72 max-w-[85vw] bg-[#1F4D3A] text-[#FFF8F0] flex flex-col h-full shadow-2xl z-10">
             {/* Drawer Header */}
-            <div className="p-5 border-b border-[#2D664F] flex items-center justify-between">
+            <div className="p-5 border-b border-[#2D664F] flex items-center justify-between shrink-0">
               <PetsWorldLogo variant="light" asLink={true} />
               <button
                 type="button"
@@ -106,7 +112,7 @@ export function AdminMobileNav({ session }: AdminMobileNavProps) {
               </button>
             </div>
 
-            {/* Navigation Items */}
+            {/* Navigation Items (Scrollable) */}
             <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto" aria-label="Mobile admin navigation">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -132,8 +138,8 @@ export function AdminMobileNav({ session }: AdminMobileNavProps) {
               })}
             </nav>
 
-            {/* Footer with Session Info & Logout */}
-            <div className="p-4 border-t border-[#2D664F] space-y-3 bg-[#173B2C]/50">
+            {/* Footer with Session Info & Logout (Pinned at bottom) */}
+            <div className="p-4 border-t border-[#2D664F] space-y-3 bg-[#173B2C]/90 shrink-0">
               <Link
                 href="/"
                 target="_blank"
@@ -162,7 +168,8 @@ export function AdminMobileNav({ session }: AdminMobileNavProps) {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -7,6 +7,7 @@ import { ArrowRight, FolderTree } from "lucide-react";
 import type { Metadata } from "next";
 
 import { getCachedCategoriesHub, getCachedPageSeo } from "@/lib/cached-data";
+import { getCategoryImageUrl } from "@/lib/category-helpers";
 
 export const revalidate = 120;
 
@@ -44,20 +45,14 @@ export default async function CategoriesHubPage() {
             >
               <div>
                 <div className="flex items-center gap-4 mb-4">
-                  <div
-                    className="relative w-16 h-16 rounded-2xl bg-[#FFF8F0] border border-[#E8D9CD] overflow-hidden shrink-0 flex items-center justify-center font-black text-2xl text-[#1F4D3A]"
-                    style={{ position: "relative" }}
-                  >
-                    {cat.imageAssetId ? (
-                      <Image
-                        src={`/media/${cat.imageAssetId}/thumb`}
-                        alt={cat.name}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      cat.name.slice(0, 1)
-                    )}
+                  <div className="relative w-20 h-20 rounded-2xl bg-[#FFF8F0] border border-[#E8D9CD] overflow-hidden shrink-0 shadow-2xs">
+                    <Image
+                      src={getCategoryImageUrl(cat.slug, cat.imageAssetId)}
+                      alt={cat.name}
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
                   </div>
                   <div>
                     <h2 className="text-xl font-black text-[#2B2622]">

@@ -69,9 +69,21 @@ export default async function ShopPage({
   }
 
   if (categorySlug) {
+    const parentCategory = await db.category.findUnique({
+      where: { slug: categorySlug },
+      select: {
+        id: true,
+        children: { where: { isActive: true }, select: { slug: true } },
+      },
+    });
+
+    const matchingSlugs = parentCategory
+      ? [categorySlug, ...parentCategory.children.map((c) => c.slug)]
+      : [categorySlug];
+
     where.categories = {
       some: {
-        category: { slug: categorySlug },
+        category: { slug: { in: matchingSlugs } },
       },
     };
   }
